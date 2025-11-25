@@ -9,7 +9,15 @@ const isPublicRoute = createRouteMatcher([
   '/product(.*)',
 ])
 
-export default clerkMiddleware()
+export default clerkMiddleware((auth, req) => {
+  // Allow public routes without authentication
+  if (isPublicRoute(req)) {
+    return;
+  }
+
+  // Protect all other routes
+  auth().protect();
+});
 
 export const config = {
   matcher: [
@@ -18,4 +26,4 @@ export const config = {
     // Always run for API routes
     '/(api|trpc)(.*)',
   ],
-}
+};
